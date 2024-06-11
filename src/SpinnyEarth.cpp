@@ -6,6 +6,9 @@ int main(void) {
   const int SH = 800;
   const float ASPECT_RATIO = (float)SW/SH;
 
+  const int RENDERFPS = 60;
+  int frameCount = 0;
+
   SetConfigFlags(FLAG_MSAA_4X_HINT);
   InitWindow(SW, SH, "xoot");
 
@@ -28,10 +31,11 @@ int main(void) {
   UnloadImage(earthImg);
   SetShaderValueTexture(shader, GetShaderLocation(shader, "texture1"), earthTex);
 
-  SetTargetFPS(60);
+  SetTargetFPS(600);
 
   while (!WindowShouldClose()) {
-    time = (float)GetTime();
+    frameCount++;
+    time = (float)frameCount/RENDERFPS;
     SetShaderValue(shader, timeLoc, &time, SHADER_UNIFORM_FLOAT);
 
     BeginDrawing();
