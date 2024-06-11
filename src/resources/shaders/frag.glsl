@@ -10,6 +10,8 @@ out vec4 finalColor;
 // Uniforms
 uniform float uTime = 0.0;
 uniform float aRatio = 1.0;
+uniform sampler2D texture0;
+uniform sampler2D texture1;
 
 void main() {
   vec2 fragPos = fragTexCoord;
@@ -29,7 +31,7 @@ void main() {
 
   float discriminant = b*b - 4*a*c;
 
-  vec3 color = vec3(uv.x, uv.y, 0.0);
+  vec4 color = vec4(uv.x, uv.y, 0.0, 1.0);
   if (discriminant >= 0.0) {
     float t = (-b - sqrt(discriminant))/(2*a);
     if (t >= 0.005) {
@@ -37,18 +39,21 @@ void main() {
       vec3 normal = (intersectionPoint - spherePos)/radius;
 
       float latitude = degrees(asin(normal.y));
-      float longitude = degrees(atan(normal.x,normal.z)) + 15*uTime;
+      float longitude = degrees(atan(normal.x,normal.z)) + 60*uTime;
 
-      if (mod(floor(latitude/15.0) + floor(longitude/15.0), 2) == 0.0) {
-        color = vec3(1.0);
-      } else {
-        color = vec3(1.0, 0.0, 0.0);
-      }
+      vec2 texCoord = vec2(mod(longitude, 360.0)/360.0,1.0-(latitude+90.0)/180.0);
+
+      color = texture(texture1, texCoord);
+      //if (mod(floor(latitude/15.0) + floor(longitude/15.0), 2) == 0.0) {
+      //  color = vec3(1.0);
+      //} else {
+      //  color = vec3(1.0, 0.0, 0.0);
+      //}
 
 
       //color = normal;
     }
   }
 
-  finalColor = vec4(color, 1.0);
+  finalColor = color;
 }

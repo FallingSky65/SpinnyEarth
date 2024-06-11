@@ -6,6 +6,7 @@ int main(void) {
   const int SH = 450;
   const float ASPECT_RATIO = (float)SW/SH;
 
+  SetConfigFlags(FLAG_MSAA_4X_HINT);
   InitWindow(SW, SH, "xoot");
 
   Image imBlank = GenImageColor(SW, SH, BLANK);
@@ -22,6 +23,11 @@ int main(void) {
       GetShaderLocation(shader, "aRatio"),
       &ASPECT_RATIO, SHADER_UNIFORM_FLOAT);
 
+  Image earthImg = LoadImage("src/resources/EarthTex.png");
+  Texture2D earthTex = LoadTextureFromImage(earthImg);
+  UnloadImage(earthImg);
+  SetShaderValueTexture(shader, GetShaderLocation(shader, "texture1"), earthTex);
+
   SetTargetFPS(60);
 
   while (!WindowShouldClose()) {
@@ -32,12 +38,17 @@ int main(void) {
       ClearBackground(RAYWHITE);
       
       BeginShaderMode(shader);
+        SetShaderValueTexture(shader,
+            GetShaderLocation(shader, "texture1"),
+            earthTex);
         DrawTexture(texture, 0, 0, WHITE);
       EndShaderMode();
+      
+      DrawFPS(10, 10);
 
     EndDrawing();
   }
-
+  UnloadTexture(earthTex);
   UnloadShader(shader);
 
   CloseWindow();
