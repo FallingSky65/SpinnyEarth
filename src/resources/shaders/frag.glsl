@@ -19,9 +19,9 @@ void main() {
   uv *= vec2(1.0, -1.0) * vec2(aRatio, 1.0);
 
   // raysphere
-  vec3 spherePos = vec3(0.0, 0.0, -2.0);
+  vec3 spherePos = vec3(0.0, 0.0, -3.0);
   float radius = 1.0;
-  vec3 rayDir = vec3(uv, -1.0);
+  vec3 rayDir = vec3(uv, -2.0);
   vec3 rayOrig = vec3(0.0);
   rayDir /= length(rayDir);
 
@@ -31,19 +31,25 @@ void main() {
 
   float discriminant = b*b - 4*a*c;
 
-  vec4 color = vec4(uv.x, uv.y, 0.0, 1.0);
+  vec3 color = vec3(0.8);//vec4(uv.x, uv.y, 0.0, 1.0);
   if (discriminant >= 0.0) {
     float t = (-b - sqrt(discriminant))/(2*a);
     if (t >= 0.005) {
       vec3 intersectionPoint = rayOrig + t*rayDir;
-      vec3 normal = (intersectionPoint - spherePos)/radius;
+      vec3 N = (intersectionPoint - spherePos)/radius;
 
-      float latitude = degrees(asin(normal.y));
-      float longitude = degrees(atan(normal.x,normal.z)) + 60*uTime;
+      float latitude = degrees(asin(N.y));
+      float longitude = degrees(atan(N.x,N.z)) + 60*uTime;
 
       vec2 texCoord = vec2(mod(longitude, 360.0)/360.0,1.0-(latitude+90.0)/180.0);
 
-      color = texture(texture1, texCoord);
+      color = texture(texture1, texCoord).xyz;
+
+      vec3 L = vec3(1.0);
+      L /= length(L);
+      float ambient = 0.2;
+      float diffuse = max(0.0, 1.0*dot(N, L));
+      color *= (ambient+diffuse);
       //if (mod(floor(latitude/15.0) + floor(longitude/15.0), 2) == 0.0) {
       //  color = vec3(1.0);
       //} else {
@@ -55,5 +61,5 @@ void main() {
     }
   }
 
-  finalColor = color;
+  finalColor = vec4(color, 1.0);
 }

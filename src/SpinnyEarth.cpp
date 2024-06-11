@@ -3,7 +3,7 @@
 int main(void) {
   
   const int SW = 800;
-  const int SH = 450;
+  const int SH = 800;
   const float ASPECT_RATIO = (float)SW/SH;
 
   SetConfigFlags(FLAG_MSAA_4X_HINT);
