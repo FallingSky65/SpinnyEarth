@@ -6,8 +6,10 @@ int main(void) {
   const int SH = 800;
   const float ASPECT_RATIO = (float)SW/SH;
 
-  const int RENDERFPS = 60;
+  const int RENDERFPS = 30;
+  const int DURATION = 10;
   int frameCount = 0;
+
 
   SetConfigFlags(FLAG_MSAA_4X_HINT);
   InitWindow(SW, SH, "xoot");
@@ -33,7 +35,7 @@ int main(void) {
 
   SetTargetFPS(600);
 
-  while (!WindowShouldClose()) {
+  while (!WindowShouldClose() && frameCount < DURATION*RENDERFPS) {
     frameCount++;
     time = (float)frameCount/RENDERFPS;
     SetShaderValue(shader, timeLoc, &time, SHADER_UNIFORM_FLOAT);
@@ -48,9 +50,11 @@ int main(void) {
         DrawTexture(texture, 0, 0, WHITE);
       EndShaderMode();
       
-      DrawFPS(10, 10);
+      //DrawFPS(10, 10);
 
     EndDrawing();
+
+    TakeScreenshot(TextFormat("Frame%03i.png", frameCount));
   }
   UnloadTexture(earthTex);
   UnloadShader(shader);
