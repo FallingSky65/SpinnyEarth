@@ -1,4 +1,6 @@
 #include "raylib.h"
+#include <cstdlib>
+#include <iostream>
 
 int main(void) {
   
@@ -10,14 +12,15 @@ int main(void) {
   const int DURATION = 10;
   int frameCount = 0;
 
-
-  SetConfigFlags(FLAG_MSAA_4X_HINT);
+  //SetConfigFlags(!FLAG_WINDOW_HIGHDPI);
   InitWindow(SW, SH, "xoot");
+
+  //std::cout << GetWindowScaleDPI().x << std::endl;
 
   Image imBlank = GenImageColor(SW, SH, BLANK);
   Texture2D texture = LoadTextureFromImage(imBlank);
   UnloadImage(imBlank);
-
+  
   Shader shader = LoadShader(0,"src/resources/shaders/frag.glsl");
 
   float time = 0.0f;
@@ -33,31 +36,50 @@ int main(void) {
   UnloadImage(earthImg);
   SetShaderValueTexture(shader, GetShaderLocation(shader, "texture1"), earthTex);
 
+  RenderTexture2D canvas = LoadRenderTexture(SW,SH);
+
   SetTargetFPS(600);
 
-  while (!WindowShouldClose() && frameCount < DURATION*RENDERFPS) {
+  while (!WindowShouldClose() && frameCount <= DURATION*RENDERFPS) {
     frameCount++;
     time = (float)frameCount/RENDERFPS;
     SetShaderValue(shader, timeLoc, &time, SHADER_UNIFORM_FLOAT);
 
-    BeginDrawing();
+    //BeginDrawing();
+    BeginTextureMode(canvas);
+
       ClearBackground(RAYWHITE);
       
       BeginShaderMode(shader);
         SetShaderValueTexture(shader,
             GetShaderLocation(shader, "texture1"),
             earthTex);
+        //DrawRectangle(0, 0, SW, SH, WHITE);
         DrawTexture(texture, 0, 0, WHITE);
       EndShaderMode();
+
+    EndTextureMode();
+
+    BeginDrawing();
+
+      ClearBackground(RAYWHITE);
+
+      DrawTexture(canvas.texture, 0, 0, WHITE);
       
-      //DrawFPS(10, 10);
+      SetWindowTitle(TextFormat("xoot | FPS: %i | %i/%i Frames", GetFPS(), frameCount-1, DURATION*RENDERFPS));
 
     EndDrawing();
 
-    TakeScreenshot(TextFormat("Frame%03i.png", frameCount));
+    if (frameCount > 1) {
+      //TakeScreenshot(TextFormat("Frame%03i.png", frameCount-1));
+      Image screenshot = LoadImageFromTexture(canvas.texture);
+      ExportImage(screenshot, TextFormat("Frame%03i.png", frameCount-1));
+      UnloadImage(screenshot);
+    }
   }
   UnloadTexture(earthTex);
   UnloadShader(shader);
+  UnloadRenderTexture(canvas);
 
   CloseWindow();
 

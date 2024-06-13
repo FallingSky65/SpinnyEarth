@@ -1,5 +1,6 @@
 bin/*
 frames/*
+.DS_Store
 
 # Prerequisites
 *.d

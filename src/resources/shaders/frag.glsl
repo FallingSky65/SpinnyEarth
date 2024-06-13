@@ -16,7 +16,7 @@ uniform sampler2D texture1;
 void main() {
   vec2 fragPos = fragTexCoord;
   vec2 uv = fragPos*vec2(2.0, 2.0) - vec2(1.0, 1.0);
-  uv *= vec2(1.0, -1.0) * vec2(aRatio, 1.0);
+  uv *= vec2(aRatio, 1.0);
 
   // raysphere
   vec3 spherePos = vec3(0.0, 0.0, -3.0);
