@@ -20,7 +20,7 @@ int main(void) {
   const int DURATION = 10;
   int frameCount = 0;
 
-  const bool SAVEFRAMES = false;
+  const bool SAVEFRAMES = true;
 
   InitWindow(SW, SH, "xoot");
 
@@ -77,7 +77,7 @@ int main(void) {
     // Uncomment to make camera orbit
     //UpdateCamera(&camera, CAMERA_ORBITAL);
     
-    sphereModel.transform = MatrixMultiply(sphereTransformDefault, MatrixRotateY(time*radians(6.0f)));
+    sphereModel.transform = MatrixMultiply(sphereTransformDefault, MatrixRotateY(time*radians(36.0f)));
 
     SetShaderValue(shader, shader.locs[SHADER_LOC_VECTOR_VIEW], &camera.position.x, SHADER_UNIFORM_VEC3);
 
