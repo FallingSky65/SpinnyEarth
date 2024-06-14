@@ -2,6 +2,9 @@
 
 SpinnyEarth is a program that renders a video of the earth spinning, using the [raylib](https://www.raylib.com/index.html) library.
 
+## Example
+![example gif](renders/result.gif)
+
 ## Dependencies
 * `gcc` - compiler used
 * `raylib` - used as graphics library
